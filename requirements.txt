@@ -1,0 +1,9 @@
+flask
+gunicorn
+tensorflow
+pandas
+numpy
+scikit-learn
+yfinance
+pandas-ta
+requests

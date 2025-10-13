@@ -1,0 +1,44 @@
+name: Hourly Market Analysis
+
+on:
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+  schedule:
+    # Runs at the top of every hour from 14:00 to 21:00 UTC (9 AM to 4 PM ET approx)
+    # on every weekday (Monday-Friday).
+    - cron: '0 14-21 * * 1-5'
+
+jobs:
+  run-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # IMPORTANT: This step is required to download your large model files
+      - name: Set up Git LFS
+        run: |
+          git lfs install
+          git lfs pull
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12' # Use a version compatible with your model
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run the analysis script
+        run: python run_analysis.py
+
+      - name: Commit and push results
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add RESULTS.md
+          # Commit only if there are changes
+          git diff-index --quiet HEAD || git commit -m "Update hourly analysis results"
+          git push
