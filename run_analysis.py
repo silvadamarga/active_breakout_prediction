@@ -8,7 +8,7 @@ import pickle
 from concurrent.futures import ThreadPoolExecutor
 import logging
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 
 # --- Configuration (Mirrors app.py) ---
 HISTORY_PERIOD = "5y"
@@ -17,7 +17,8 @@ CONFIDENCE_THRESHOLD = 0.60
 MODEL_FILENAME = 'breakout_tuned_model_wf_final.keras'
 SCALER_FILENAME = 'scaler_wf_final.pkl'
 METADATA_FILENAME = 'metadata_wf_final.pkl'
-OUTPUT_FILENAME = 'RESULTS.md'
+# --- CHANGE: Output is now an HTML file ---
+OUTPUT_FILENAME = 'index.html'
 
 # --- Set up basic logging ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -90,7 +91,7 @@ def process_data_for_prediction(df: pd.DataFrame, spy_df: pd.DataFrame, features
 
 def analyze_stock(ticker_data, spy_df, model, scaler, features):
     ticker, full_df = ticker_data
-    if full_df is None: return {"Ticker": ticker, "Signal": "Data Error"}
+    if full_df is None: return {"Ticker": ticker, "Signal": "Data Error", "Price": "N/A", "Confidence": "N/A", "Pred_Return": "N/A"}
 
     processed_df = process_data_for_prediction(full_df, spy_df, features)
     
@@ -115,11 +116,83 @@ def analyze_stock(ticker_data, spy_df, model, scaler, features):
         "Signal": signal
     }
 
+def generate_html_report(results):
+    """Generates a full HTML page with the analysis results."""
+    # Sort results by confidence (highest first), handling N/A values
+    def sort_key(res):
+        try:
+            return float(res['Confidence'].strip('%'))
+        except (ValueError, AttributeError):
+            return -1 # Put non-numeric/N/A values at the bottom
+    
+    sorted_results = sorted(results, key=sort_key, reverse=True)
+
+    # Build the HTML for the table rows
+    rows_html = ""
+    for res in sorted_results:
+        if res['Signal'] == 'Potential Breakout':
+            signal_class = 'bg-green-100 text-green-800'
+        elif res['Signal'] == 'Hold':
+            signal_class = 'bg-yellow-100 text-yellow-800'
+        else: # Errors or Not Enough Data
+            signal_class = 'bg-red-100 text-red-800'
+        
+        rows_html += f"""
+        <tr>
+            <td class="py-4 px-4 whitespace-nowrap"><a href="https://finance.yahoo.com/quote/{res['Ticker']}" target="_blank" class="font-medium text-blue-600 hover:text-blue-800">{res['Ticker']}</a></td>
+            <td class="py-4 px-4 whitespace-nowrap">{res['Price']}</td>
+            <td class="py-4 px-4 whitespace-nowrap">{res['Confidence']}</td>
+            <td class="py-4 px-4 whitespace-nowrap">{res['Pred_Return']}</td>
+            <td class="py-4 px-4 whitespace-nowrap">
+                <span class="px-2.5 py-1 inline-flex text-sm leading-5 font-semibold rounded-full {signal_class}">
+                    {res['Signal']}
+                </span>
+            </td>
+        </tr>
+        """
+        
+    # Create the full HTML document
+    return f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Hourly Stock Breakout Analysis</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style> body {{ font-family: 'Inter', sans-serif; }} </style>
+    </head>
+    <body class="bg-gray-100 text-gray-800">
+        <div class="container mx-auto p-4 md:p-8">
+            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Hourly Stock Breakout Analysis</h1>
+                <p class="text-gray-600 mb-6">Analysis of the most active stocks, updated hourly during market hours. Last updated: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}</p>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="py-3 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Ticker</th>
+                                <th class="py-3 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
+                                <th class="py-3 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Confidence</th>
+                                <th class="py-3 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Pred. Return</th>
+                                <th class="py-3 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Signal</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            {rows_html}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
 def main():
     """Main function to run the analysis and save results."""
     logging.info("Starting analysis run...")
     
-    # Load model and artifacts
     try:
         model = tf.keras.models.load_model(MODEL_FILENAME)
         with open(SCALER_FILENAME, 'rb') as f: scaler = pickle.load(f)
@@ -129,13 +202,11 @@ def main():
         logging.error(f"Could not load model artifacts. Aborting. Error: {e}")
         return
 
-    # Get tickers to analyze
     tickers = get_most_active_stocks()
     if not tickers:
         logging.warning("No tickers to analyze. Exiting.")
         return
 
-    # Fetch data
     _, spy_df = get_stock_data("SPY")
     if spy_df is None:
         logging.error("Could not fetch SPY data. Aborting.")
@@ -145,27 +216,13 @@ def main():
         ticker_data_list = list(executor.map(get_stock_data, tickers))
         results = list(executor.map(lambda td: analyze_stock(td, spy_df, model, scaler, features), ticker_data_list))
 
-    # Filter for potential breakouts and sort by confidence
-    breakouts = sorted(
-        [res for res in results if res['Signal'] == 'Potential Breakout'],
-        key=lambda x: float(x['Confidence'].strip('%')),
-        reverse=True
-    )
+    html_content = generate_html_report(results)
     
-    # Write results to a markdown file
-    with open(OUTPUT_FILENAME, 'w') as f:
-        f.write(f"# Stock Breakout Analysis\n\n")
-        f.write(f"**Last Updated:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}\n\n")
-        
-        if not breakouts:
-            f.write("No potential breakouts found matching the criteria.\n")
-        else:
-            f.write("| Ticker | Price | Confidence | Pred. Return |\n")
-            f.write("|--------|-------|------------|--------------|\n")
-            for res in breakouts:
-                f.write(f"| {res['Ticker']} | {res['Price']} | {res['Confidence']} | {res['Pred_Return']} |\n")
+    with open(OUTPUT_FILENAME, 'w', encoding='utf-8') as f:
+        f.write(html_content)
                 
-    logging.info(f"Analysis complete. Results saved to {OUTPUT_FILENAME}")
+    logging.info(f"Analysis complete. HTML report saved to {OUTPUT_FILENAME}")
 
 if __name__ == '__main__':
     main()
+

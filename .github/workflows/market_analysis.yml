@@ -8,14 +8,18 @@ on:
     - cron: '0 14-21 * * 1-5'
 
 jobs:
-  run-analysis:
+  run-analysis-and-deploy:
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write      # Permission to commit the index.html file
+      pages: write         # Permission to deploy to GitHub Pages
+      id-token: write      # Permission for the deployment action
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # IMPORTANT: This step is required to download your large model files
       - name: Set up Git LFS
         run: |
           git lfs install
@@ -24,7 +28,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12' # Use a version compatible with your model
+          python-version: '3.12' 
 
       - name: Install dependencies
         run: |
@@ -34,11 +38,27 @@ jobs:
       - name: Run the analysis script
         run: python run_analysis.py
 
-      - name: Commit and push results
+      - name: Commit and push HTML result
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add RESULTS.md
+          # --- FIX: Add the new index.html file ---
+          git add index.html
           # Commit only if there are changes
-          git diff-index --quiet HEAD || git commit -m "Update hourly analysis results"
+          git diff-index --quiet HEAD || git commit -m "Update hourly analysis results page"
           git push
+
+      # --- Steps to deploy the generated HTML to GitHub Pages ---
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload the root directory which contains the index.html
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
