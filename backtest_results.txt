@@ -1,0 +1,7 @@
+=================================================================
+Run Timestamp: 2025-10-13 06:02:06
+Best Hyperparameters: {'conv_filters': 64, 'lstm_units': 64, 'shared_units': 96, 'head_units': 16, 'dropout': 0.30000000000000004, 'learning_rate': 0.001, 'tuner/epochs': 15, 'tuner/initial_epoch': 5, 'tuner/bracket': 2, 'tuner/round': 2, 'tuner/trial_id': '0014'}
+BREAKOUT -> AUC: 0.6128 | PR-AUC: 0.3500
+RETURN   -> MAE: 12.69% | RMSE: 21.04%
+=================================================================
+

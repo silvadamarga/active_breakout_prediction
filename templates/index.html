@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Breakout Predictor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .sortable-header {
+            cursor: pointer;
+            position: relative;
+            padding-right: 1.5em; /* Space for arrow */
+        }
+        .sortable-header::after,
+        .sortable-header::before {
+            content: '';
+            position: absolute;
+            right: 0.5em;
+            border: 4px solid transparent;
+        }
+        .sortable-header::before {
+            top: 0.6em;
+            border-bottom-color: #9ca3af; /* gray-400 */
+        }
+        .sortable-header::after {
+            bottom: 0.6em;
+            border-top-color: #9ca3af; /* gray-400 */
+        }
+        .sortable-header[data-sort-direction="asc"]::before {
+            border-bottom-color: #1f2937; /* gray-800 */
+        }
+        .sortable-header[data-sort-direction="desc"]::after {
+            border-top-color: #1f2937; /* gray-800 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Stock Breakout Predictor</h1>
+            <p class="text-gray-600 mb-6">Enter comma-separated stock tickers to analyze them for potential breakout signals.</p>
+
+            <form method="POST" class="mb-6">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <textarea name="tickers" id="tickers-textarea" rows="4" class="flex-grow p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="e.g., AAPL, MSFT, NVDA">{{ initial_tickers }}</textarea>
+                    <div class="flex flex-col gap-2 md:w-48">
+                         <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition shadow">Analyze Tickers</button>
+                         <button type="button" id="most-active-btn" class="w-full bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 transition">Load Most Active</button>
+                    </div>
+                </div>
+            </form>
+
+            {% if error %}
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6" role="alert">
+                    <strong class="font-bold">Error:</strong>
+                    <span class="block sm:inline">{{ error }}</span>
+                </div>
+            {% endif %}
+
+            {% if results %}
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Analysis Results</h2>
+                <div class="overflow-x-auto">
+                    <table id="results-table" class="min-w-full bg-white border border-gray-200 rounded-lg">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="py-3 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase tracking-wider sortable-header" data-column="0" data-type="alpha">Ticker</th>
+                                <th class="py-3 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase tracking-wider sortable-header" data-column="1" data-type="numeric">Price</th>
+                                <th class="py-3 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase tracking-wider sortable-header" data-column="2" data-type="numeric">Confidence</th>
+                                <th class="py-3 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase tracking-wider sortable-header" data-column="3" data-type="numeric">Pred. Return</th>
+                                <th class="py-3 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase tracking-wider sortable-header" data-column="4" data-type="alpha">Signal</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            {% for result in results %}
+                                <tr>
+                                    <td class="py-4 px-4 whitespace-nowrap"><a href="https://finance.yahoo.com/quote/{{ result.Ticker }}" target="_blank" class="font-medium text-blue-600 hover:text-blue-800">{{ result.Ticker }}</a></td>
+                                    <td class="py-4 px-4 whitespace-nowrap">{{ result.Price }}</td>
+                                    <td class="py-4 px-4 whitespace-nowrap">{{ result.Confidence }}</td>
+                                    <td class="py-4 px-4 whitespace-nowrap">{{ result.Pred_Return }}</td>
+                                    <td class="py-4 px-4 whitespace-nowrap">
+                                        {% if result.Signal == 'Potential Breakout' %}
+                                            <span class="px-2.5 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                {{ result.Signal }}
+                                            </span>
+                                        {% elif result.Signal == 'Hold' %}
+                                             <span class="px-2.5 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                {{ result.Signal }}
+                                            </span>
+                                        {% else %}
+                                            <span class="px-2.5 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                {{ result.Signal }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const mostActiveBtn = document.getElementById('most-active-btn');
+        const tickersTextarea = document.getElementById('tickers-textarea');
+
+        mostActiveBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/get-most-active');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.tickers) {
+                    tickersTextarea.value = data.tickers.join(', ');
+                } else if (data.error) {
+                    alert('Error fetching tickers: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Failed to fetch most active stocks:', error);
+                alert('Failed to fetch most active stocks. See console for details.');
+            }
+        });
+
+        // --- NEW: Table Sorting Logic ---
+        const table = document.getElementById('results-table');
+        if (table) {
+            const headers = table.querySelectorAll('.sortable-header');
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const columnIndex = parseInt(header.dataset.column, 10);
+                    const type = header.dataset.type;
+                    const currentDirection = header.dataset.sortDirection || 'desc';
+                    const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+                    
+                    sortColumn(table, columnIndex, type, newDirection);
+
+                    // Update header attributes
+                    headers.forEach(h => h.removeAttribute('data-sort-direction'));
+                    header.dataset.sortDirection = newDirection;
+                });
+            });
+        }
+    });
+
+    function sortColumn(table, columnIndex, type, direction) {
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const directionModifier = direction === 'asc' ? 1 : -1;
+
+        const sortedRows = rows.sort((a, b) => {
+            const aText = a.children[columnIndex].textContent.trim();
+            const bText = b.children[columnIndex].textContent.trim();
+
+            if (type === 'numeric') {
+                const aValue = parseFloat(aText.replace(/[^0-9.-]+/g,"")) || 0;
+                const bValue = parseFloat(bText.replace(/[^0-9.-]+/g,"")) || 0;
+                if (aValue < bValue) return -1 * directionModifier;
+                if (aValue > bValue) return 1 * directionModifier;
+                return 0;
+            } else { // 'alpha'
+                if (aText < bText) return -1 * directionModifier;
+                if (aText > bText) return 1 * directionModifier;
+                return 0;
+            }
+        });
+
+        // Remove existing rows and append sorted rows
+        while (tbody.firstChild) {
+            tbody.removeChild(tbody.firstChild);
+        }
+        tbody.append(...sortedRows);
+    }
+</script>
+
+</body>
+</html>
+
