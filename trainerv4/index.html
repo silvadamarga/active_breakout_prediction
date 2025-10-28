@@ -1,0 +1,626 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-R-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for table sorting */
+        th.sortable {
+            position: relative;
+            cursor: pointer;
+            padding-right: 1.5rem; /* Space for arrow */
+        }
+        th.sortable::after,
+        th.sortable::before {
+            position: absolute;
+            right: 0.5rem;
+            opacity: 0.3;
+            content: '';
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+        }
+        th.sortable::before {
+            bottom: 50%; /* Top arrow */
+            border-bottom: 5px solid currentColor;
+        }
+        th.sortable::after {
+            top: 50%; /* Bottom arrow */
+            border-top: 5px solid currentColor;
+        }
+        th.sort-asc::before,
+        th.sort-desc::after {
+            opacity: 1;
+        }
+        
+        /* Simple sticky header for the table */
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-900">Stock Analysis Dashboard</h1>
+            <p class="text-sm text-gray-600">Last generated: 2025-10-28 23:20:21 UTC</p>
+        </header>
+
+        <!-- Filter Input -->
+        <div class="mb-4">
+            <input type="text" id="filterInput"
+                   class="w-full max-w-md p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                   placeholder="Filter by Ticker, Name, or Sector...">
+        </div>
+
+        <!-- Main Table Container -->
+        <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+            <table class="min-w-full divide-y divide-gray-200" id="stockTable">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" data-column="0" data-type="string">Ticker</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" data-column="1" data-type="string">Company Name</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" data-column="2" data-type="string">Sector</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" data-column="3" data-type="string">Date</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" data-column="4" data-type="number">Bullish</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" data-column="5" data-type="number">News</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" data-column="6" data-type="number">Growth</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" data-column="7" data-type="number">Val</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" data-column="8" data-type="number">Health</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reasoning</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Positive</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Negative</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" data-column="12" data-type="percent">Confidence</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200" id="tableBody">
+                    
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/CARR" target="_blank" rel="noopener noreferrer" class="hover:underline">CARR</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Carrier Global Corporation</td>
+            <td class="px-4 py-3 text-gray-600">Industrials</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-green-100 text-green-800">9</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">9</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">3</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">6</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The short-term outlook for CARR is highly bullish due to the significant Q3 earnings and revenue beats, which have already led to share gains and increased volume. Analyst consensus to BUY and announced buyback plans further bolster positive investor sentiment for today.">The short-term outlook for CARR is highly bullish due to the significant Q3 earnings and revenue beats, which have already led to share gains and increased volume. Analyst consensus to BUY and announced buyback plans further bolster positive investor sentiment for today.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Carrier Global reported strong Q3 earnings and revenue beats, leading to share gains and the announcement of buyback plans, all supported by higher than average trading volume.">Carrier Global reported strong Q3 earnings and revenue beats, leading to share gains and the announcement of buyback plans, all supported by higher than average trading volume.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The company experienced significant negative earnings growth year-over-year and underperformed the S&amp;P 500 over the last 52 weeks, alongside a relatively high debt-to-equity ratio.">The company experienced significant negative earnings growth year-over-year and underperformed the S&amp;P 500 over the last 52 weeks, alongside a relatively high debt-to-equity ratio.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">89.4%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/DLTR" target="_blank" rel="noopener noreferrer" class="hover:underline">DLTR</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Dollar Tree, Inc.</td>
+            <td class="px-4 py-3 text-gray-600">Consumer Defensive</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">9</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">5</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The bullishness score for today is primarily driven by the recent 3.5% jump in share price following JPMorgan&#x27;s price target increase to $113, well above the current price. This strong analyst endorsement and immediate positive market reaction suggest continued upward momentum for the short term, despite upcoming earnings predictions and high debt.">The bullishness score for today is primarily driven by the recent 3.5% jump in share price following JPMorgan&#x27;s price target increase to $113, well above the current price. This strong analyst endorsement and immediate positive market reaction suggest continued upward momentum for the short term, despite upcoming earnings predictions and high debt.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="DLTR recently jumped 3.5% after JPMorgan raised its price target to $113, indicating strong short-term bullish momentum, supported by robust revenue and earnings growth.">DLTR recently jumped 3.5% after JPMorgan raised its price target to $113, indicating strong short-term bullish momentum, supported by robust revenue and earnings growth.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Analysts predict a potential single-digit dip in upcoming Q3 bottom-line figures, and the company carries a high debt-to-equity ratio of over 200%.">Analysts predict a potential single-digit dip in upcoming Q3 bottom-line figures, and the company carries a high debt-to-equity ratio of over 200%.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">86.4%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/LRCX" target="_blank" rel="noopener noreferrer" class="hover:underline">LRCX</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Lam Research Corporation</td>
+            <td class="px-4 py-3 text-gray-600">Technology</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">9</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">9</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="LRCX demonstrates strong short-term bullish potential due to recent positive news highlighting robust Q1 earnings, AI-driven demand, and an attractive valuation based on strong FCF. While the stock is at a 52-week high and trades on slightly below-average volume, these factors are outweighed by the compelling growth, financial health, and analyst BUY consensus, suggesting continued positive momentum.">LRCX demonstrates strong short-term bullish potential due to recent positive news highlighting robust Q1 earnings, AI-driven demand, and an attractive valuation based on strong FCF. While the stock is at a 52-week high and trades on slightly below-average volume, these factors are outweighed by the compelling growth, financial health, and analyst BUY consensus, suggesting continued positive momentum.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Lam Research exhibits strong financial performance with robust revenue and earnings growth, high margins, and substantial free cash flow, further bolstered by AI-driven demand and an analyst consensus of BUY.">Lam Research exhibits strong financial performance with robust revenue and earnings growth, high margins, and substantial free cash flow, further bolstered by AI-driven demand and an analyst consensus of BUY.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Despite strong fundamentals, the stock is at a 52-week high with below-average trading volume, and the analyst target price suggests limited immediate upside.">Despite strong fundamentals, the stock is at a 52-week high with below-average trading volume, and the analyst target price suggests limited immediate upside.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">85.9%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/ISRG" target="_blank" rel="noopener noreferrer" class="hover:underline">ISRG</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Intuitive Surgical, Inc.</td>
+            <td class="px-4 py-3 text-gray-600">Healthcare</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">9</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">9</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">2</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">10</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The recent Q3 results, highlighting robust demand for the da Vinci V system and strong revenue growth, have generated a &#x27;strongly positive market reaction&#x27; and a &#x27;BUY&#x27; analyst consensus. This immediate positive sentiment from earnings overrides long-term valuation concerns for a 1-day outlook, despite today&#x27;s lower-than-average volume.">The recent Q3 results, highlighting robust demand for the da Vinci V system and strong revenue growth, have generated a &#x27;strongly positive market reaction&#x27; and a &#x27;BUY&#x27; analyst consensus. This immediate positive sentiment from earnings overrides long-term valuation concerns for a 1-day outlook, despite today&#x27;s lower-than-average volume.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Intuitive Surgical&#x27;s Q3 results impressed with 23% revenue growth driven by robust da Vinci 5 adoption and international expansion, leading to a strongly positive market reaction. The company demonstrates excellent financial health with no debt and significant cash reserves.">Intuitive Surgical&#x27;s Q3 results impressed with 23% revenue growth driven by robust da Vinci 5 adoption and international expansion, leading to a strongly positive market reaction. The company demonstrates excellent financial health with no debt and significant cash reserves.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Despite strong recent performance and growth, ISRG trades at a very high valuation with a P/E over 70, suggesting it is quite expensive. Sustaining this rapid growth momentum may pose future challenges, and today&#x27;s trading volume is below average.">Despite strong recent performance and growth, ISRG trades at a very high valuation with a P/E over 70, suggesting it is quite expensive. Sustaining this rapid growth momentum may pose future challenges, and today&#x27;s trading volume is below average.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">93.1%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/AMP" target="_blank" rel="noopener noreferrer" class="hover:underline">AMP</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Ameriprise Financial, Inc.</td>
+            <td class="px-4 py-3 text-gray-600">Financial Services</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The significant news of Ameriprise attracting a new advisory practice with $1.6 billion in assets today provides a strong positive catalyst for short-term sentiment. While today&#x27;s volume is slightly below average, the impactful asset acquisition news is likely to drive some bullish momentum for the day.">The significant news of Ameriprise attracting a new advisory practice with $1.6 billion in assets today provides a strong positive catalyst for short-term sentiment. While today&#x27;s volume is slightly below average, the impactful asset acquisition news is likely to drive some bullish momentum for the day.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Ameriprise successfully attracted a significant financial advisory practice managing $1.6 billion in client assets, contributing to its strong earnings growth and robust financial health.">Ameriprise successfully attracted a significant financial advisory practice managing $1.6 billion in client assets, contributing to its strong earnings growth and robust financial health.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Despite strong earnings, AMP&#x27;s stock has significantly underperformed the S&amp;P 500 over the past 52 weeks, and revenue growth remains modest.">Despite strong earnings, AMP&#x27;s stock has significantly underperformed the S&amp;P 500 over the past 52 weeks, and revenue growth remains modest.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">91.7%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/COIN" target="_blank" rel="noopener noreferrer" class="hover:underline">COIN</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Coinbase Global, Inc.</td>
+            <td class="px-4 py-3 text-gray-600">Financial Services</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">9</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">9</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The bullishness for COIN today stems from strong anticipation for its Q3 earnings, driven by reported crypto momentum and rising volumes, alongside a &#x27;BUY&#x27; analyst consensus. This positive sentiment is reinforced by Cathie Wood&#x27;s continued bullishness on the crypto sector. However, today&#x27;s significantly lower trading volume (0.6x average) could temper immediate upward movement, despite these strong fundamental tailwinds.">The bullishness for COIN today stems from strong anticipation for its Q3 earnings, driven by reported crypto momentum and rising volumes, alongside a &#x27;BUY&#x27; analyst consensus. This positive sentiment is reinforced by Cathie Wood&#x27;s continued bullishness on the crypto sector. However, today&#x27;s significantly lower trading volume (0.6x average) could temper immediate upward movement, despite these strong fundamental tailwinds.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Coinbase exhibits exceptional earnings growth and robust financial health, supported by strong crypto industry momentum and positive anticipation for its upcoming Q3 earnings with rising volumes and stablecoin revenues.">Coinbase exhibits exceptional earnings growth and robust financial health, supported by strong crypto industry momentum and positive anticipation for its upcoming Q3 earnings with rising volumes and stablecoin revenues.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Despite positive catalysts, the stock exhibits a high forward P/E indicating significant future growth is already priced in, and today&#x27;s trading volume is notably below average, suggesting reduced current interest.">Despite positive catalysts, the stock exhibits a high forward P/E indicating significant future growth is already priced in, and today&#x27;s trading volume is notably below average, suggesting reduced current interest.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">88.3%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/DHR" target="_blank" rel="noopener noreferrer" class="hover:underline">DHR</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Danaher Corporation</td>
+            <td class="px-4 py-3 text-gray-600">Healthcare</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">6</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The recent news highlights robust performance in bioprocessing and respiratory diagnostics, which, combined with a &quot;STRONG_BUY&quot; analyst consensus and significant price target upside, points to positive sentiment. Although today&#x27;s trading volume is lower than average, the strong underlying business fundamentals suggest a generally bullish short-term outlook for the stock.">The recent news highlights robust performance in bioprocessing and respiratory diagnostics, which, combined with a &quot;STRONG_BUY&quot; analyst consensus and significant price target upside, points to positive sentiment. Although today&#x27;s trading volume is lower than average, the strong underlying business fundamentals suggest a generally bullish short-term outlook for the stock.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Danaher&#x27;s core businesses demonstrate strong execution and momentum in bioprocessing and respiratory diagnostics, supported by robust earnings growth and a &quot;STRONG_BUY&quot; analyst consensus with significant price upside. The company benefits from healthy free cash flow and disciplined cost management.">Danaher&#x27;s core businesses demonstrate strong execution and momentum in bioprocessing and respiratory diagnostics, supported by robust earnings growth and a &quot;STRONG_BUY&quot; analyst consensus with significant price upside. The company benefits from healthy free cash flow and disciplined cost management.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Despite positive operational news, the stock has significantly underperformed the S&amp;P 500 over the past year and traded at lower-than-average volume today, potentially indicating reduced immediate buying interest. Its trailing P/E remains high, and total debt exceeds cash reserves.">Despite positive operational news, the stock has significantly underperformed the S&amp;P 500 over the past year and traded at lower-than-average volume today, potentially indicating reduced immediate buying interest. Its trailing P/E remains high, and total debt exceeds cash reserves.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">78.3%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/TXT" target="_blank" rel="noopener noreferrer" class="hover:underline">TXT</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Textron Inc.</td>
+            <td class="px-4 py-3 text-gray-600">Industrials</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">5</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The recent announcement regarding a potential U.S. Navy contract for M-346N assembly, coupled with a leadership change at Bell and today&#x27;s higher-than-average volume, suggests positive sentiment for TXT. The stock also appears undervalued based on analyst targets and its forward P/E, creating potential for a short-term price uptick.">The recent announcement regarding a potential U.S. Navy contract for M-346N assembly, coupled with a leadership change at Bell and today&#x27;s higher-than-average volume, suggests positive sentiment for TXT. The stock also appears undervalued based on analyst targets and its forward P/E, creating potential for a short-term price uptick.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="TXT shows positive momentum with potential new U.S. Navy contracts for M-346N assembly, supported by a &#x27;BUY&#x27; analyst consensus and an attractive forward P/E, suggesting undervaluation.">TXT shows positive momentum with potential new U.S. Navy contracts for M-346N assembly, supported by a &#x27;BUY&#x27; analyst consensus and an attractive forward P/E, suggesting undervaluation.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Despite positive news, the stock has significantly underperformed the S&amp;P 500 over the past year, and the company carries a relatively high Debt/Equity ratio, posing a financial risk.">Despite positive news, the stock has significantly underperformed the S&amp;P 500 over the past year, and the company carries a relatively high Debt/Equity ratio, posing a financial risk.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">77.6%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/AMAT" target="_blank" rel="noopener noreferrer" class="hover:underline">AMAT</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Applied Materials, Inc.</td>
+            <td class="px-4 py-3 text-gray-600">Technology</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-yellow-100 text-yellow-800">6</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">9</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="AMAT closed positively and is highlighted for AI trade momentum, suggesting continued sector strength. However, the trading volume at 0.7x average indicates a lack of strong conviction behind recent price movements. Additionally, the current price is above the analyst target, raising short-term valuation concerns.">AMAT closed positively and is highlighted for AI trade momentum, suggesting continued sector strength. However, the trading volume at 0.7x average indicates a lack of strong conviction behind recent price movements. Additionally, the current price is above the analyst target, raising short-term valuation concerns.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="AMAT benefits from strong AI-driven demand in the semiconductor sector, closed positively in the last session, and exhibits excellent financial health with ample cash and free cash flow.">AMAT benefits from strong AI-driven demand in the semiconductor sector, closed positively in the last session, and exhibits excellent financial health with ample cash and free cash flow.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Despite positive momentum, AMAT&#x27;s current price is above the analyst target, and lower-than-average trading volume could indicate waning immediate interest or conviction.">Despite positive momentum, AMAT&#x27;s current price is above the analyst target, and lower-than-average trading volume could indicate waning immediate interest or conviction.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">98.7%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/KLAC" target="_blank" rel="noopener noreferrer" class="hover:underline">KLAC</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">KLA Corporation</td>
+            <td class="px-4 py-3 text-gray-600">Technology</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-yellow-100 text-yellow-800">6</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">10</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">2</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The stock faces an earnings announcement after the bell with strong positive expectations for double-digit growth driven by AI demand, which is a significant short-term catalyst. However, its current valuation appears stretched, trading above analyst target prices with a high P/E, introducing notable risk if expectations are not met. Lower trading volume today suggests a cautious market awaiting results.">The stock faces an earnings announcement after the bell with strong positive expectations for double-digit growth driven by AI demand, which is a significant short-term catalyst. However, its current valuation appears stretched, trading above analyst target prices with a high P/E, introducing notable risk if expectations are not met. Lower trading volume today suggests a cautious market awaiting results.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="KLA exhibits exceptional growth, strong margins, and is positioned to benefit from AI-driven demand and advanced packaging, with analysts expecting double-digit earnings growth for its Q1 report today.">KLA exhibits exceptional growth, strong margins, and is positioned to benefit from AI-driven demand and advanced packaging, with analysts expecting double-digit earnings growth for its Q1 report today.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The stock appears significantly overvalued with a high P/E and a current price well above analyst targets, coupled with a relatively high debt-to-equity ratio and lower-than-average trading volume ahead of earnings.">The stock appears significantly overvalued with a high P/E and a current price well above analyst targets, coupled with a relatively high debt-to-equity ratio and lower-than-average trading volume ahead of earnings.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">97.6%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/UNP" target="_blank" rel="noopener noreferrer" class="hover:underline">UNP</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Union Pacific Corporation</td>
+            <td class="px-4 py-3 text-gray-600">Industrials</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-yellow-100 text-yellow-800">6</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">6</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The primary positive drivers are the strong strategic news, including new freight lines, a major client (GE Appliances), and the potential for an $85 billion merger, which indicates significant growth potential. However, the short-term outlook for today is tempered by the unusually low trading volume (0.5x average), suggesting that the market has not yet fully priced in or strongly reacted to these developments. Therefore, a significant immediate price movement is less probable despite the fundamentally bullish news.">The primary positive drivers are the strong strategic news, including new freight lines, a major client (GE Appliances), and the potential for an $85 billion merger, which indicates significant growth potential. However, the short-term outlook for today is tempered by the unusually low trading volume (0.5x average), suggesting that the market has not yet fully priced in or strongly reacted to these developments. Therefore, a significant immediate price movement is less probable despite the fundamentally bullish news.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Recent news highlights significant strategic expansion with new freight lines and major client acquisition, alongside the highly impactful potential for an $85 billion merger with Norfolk Southern. Valuation appears attractive with considerable upside to analyst targets and a &quot;BUY&quot; consensus.">Recent news highlights significant strategic expansion with new freight lines and major client acquisition, alongside the highly impactful potential for an $85 billion merger with Norfolk Southern. Valuation appears attractive with considerable upside to analyst targets and a &quot;BUY&quot; consensus.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The stock has underperformed the broader market, and financial health shows high leverage with a Debt/Equity ratio nearing 190%. Today&#x27;s low trading volume also suggests a lack of strong immediate market reaction to recent news.">The stock has underperformed the broader market, and financial health shows high leverage with a Debt/Equity ratio nearing 190%. Today&#x27;s low trading volume also suggests a lack of strong immediate market reaction to recent news.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">91.0%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/ORCL" target="_blank" rel="noopener noreferrer" class="hover:underline">ORCL</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Oracle Corporation</td>
+            <td class="px-4 py-3 text-gray-600">Technology</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-yellow-100 text-yellow-800">5</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">6</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">2</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The short-term outlook suggests a neutral day for ORCL, primarily due to today&#x27;s low trading volume (0.5x average) and the general market holding near flat. While there&#x27;s a positive mention of Larry Ellison and an analyst &#x27;BUY&#x27; consensus, these are not strong enough catalysts for a significant price movement in a single day given the absence of other specific news and the muted trading activity.">The short-term outlook suggests a neutral day for ORCL, primarily due to today&#x27;s low trading volume (0.5x average) and the general market holding near flat. While there&#x27;s a positive mention of Larry Ellison and an analyst &#x27;BUY&#x27; consensus, these are not strong enough catalysts for a significant price movement in a single day given the absence of other specific news and the muted trading activity.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Oracle exhibits strong historical stock performance and robust revenue growth, supported by high operating margins and a &quot;BUY&quot; consensus from analysts who see significant upside potential. Larry Ellison was also noted as a major wealth gainer this year.">Oracle exhibits strong historical stock performance and robust revenue growth, supported by high operating margins and a &quot;BUY&quot; consensus from analysts who see significant upside potential. Larry Ellison was also noted as a major wealth gainer this year.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The company faces substantial financial health concerns with very high debt levels and negative free cash flow, compounded by low trading volume today. Earnings growth has also been slightly negative year-over-year, alongside a high trailing P/E ratio.">The company faces substantial financial health concerns with very high debt levels and negative free cash flow, compounded by low trading volume today. Earnings growth has also been slightly negative year-over-year, alongside a high trailing P/E ratio.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">95.9%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/ALGN" target="_blank" rel="noopener noreferrer" class="hover:underline">ALGN</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Align Technology, Inc.</td>
+            <td class="px-4 py-3 text-gray-600">Healthcare</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">5</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">6</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The primary driver for today&#x27;s outlook is the impending earnings announcement tomorrow, introducing significant short-term uncertainty. Today&#x27;s trading volume is exceptionally low (0.5x average), suggesting investors are largely on the sidelines and exercising caution rather than taking strong directional bets before the catalyst.">The primary driver for today&#x27;s outlook is the impending earnings announcement tomorrow, introducing significant short-term uncertainty. Today&#x27;s trading volume is exceptionally low (0.5x average), suggesting investors are largely on the sidelines and exercising caution rather than taking strong directional bets before the catalyst.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Align Technology exhibits strong earnings growth and a favorable valuation with a significant analyst target, supported by robust free cash flow and a healthy cash balance.">Align Technology exhibits strong earnings growth and a favorable valuation with a significant analyst target, supported by robust free cash flow and a healthy cash balance.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Revenue growth is negative, and the stock has significantly underperformed, with investor caution evident in low trading volume ahead of tomorrow&#x27;s earnings announcement.">Revenue growth is negative, and the stock has significantly underperformed, with investor caution evident in low trading volume ahead of tomorrow&#x27;s earnings announcement.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">93.8%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/DG" target="_blank" rel="noopener noreferrer" class="hover:underline">DG</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Dollar General Corporation</td>
+            <td class="px-4 py-3 text-gray-600">Consumer Defensive</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">5</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">3</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Today&#x27;s trading volume is significantly below average (0.7x), indicating a lack of immediate strong conviction or buying pressure. Although analysts maintain a &quot;BUY&quot; rating with a higher target price and Q3 earnings growth is expected, the broader retail sector has recently lagged the market, creating a cautious short-term sentiment for DG.">Today&#x27;s trading volume is significantly below average (0.7x), indicating a lack of immediate strong conviction or buying pressure. Although analysts maintain a &quot;BUY&quot; rating with a higher target price and Q3 earnings growth is expected, the broader retail sector has recently lagged the market, creating a cautious short-term sentiment for DG.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Dollar General shows robust growth, outperforming the S&amp;P 500 over the past year, and analysts forecast continued mid-single-digit earnings growth for Q3 with a &quot;BUY&quot; rating and significant price target upside.">Dollar General shows robust growth, outperforming the S&amp;P 500 over the past year, and analysts forecast continued mid-single-digit earnings growth for Q3 with a &quot;BUY&quot; rating and significant price target upside.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The company&#x27;s very high debt-to-equity ratio of 213.03 is a significant financial risk, while low trading volume today and broader retail sector uncertainties regarding consumer spending temper the short-term outlook.">The company&#x27;s very high debt-to-equity ratio of 213.03 is a significant financial risk, while low trading volume today and broader retail sector uncertainties regarding consumer spending temper the short-term outlook.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">85.2%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/TAP" target="_blank" rel="noopener noreferrer" class="hover:underline">TAP</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Molson Coors Beverage Company</td>
+            <td class="px-4 py-3 text-gray-600">Consumer Defensive</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">5</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">9</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">3</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The 1-day outlook is tempered by a recent report suggesting a likely earnings miss, which is a strong immediate negative. Despite an attractive valuation and long-term restructuring plans, the low trading volume (0.8x avg) and ongoing underperformance against the S&amp;P 500 indicate a lack of immediate positive catalysts. The very high debt-to-equity ratio also adds a layer of caution for short-term investors.">The 1-day outlook is tempered by a recent report suggesting a likely earnings miss, which is a strong immediate negative. Despite an attractive valuation and long-term restructuring plans, the low trading volume (0.8x avg) and ongoing underperformance against the S&amp;P 500 indicate a lack of immediate positive catalysts. The very high debt-to-equity ratio also adds a layer of caution for short-term investors.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The company has announced a corporate restructuring plan aimed at future growth and has been recognized as one of the &quot;Best 52-Week Low Mid Cap Stocks to Buy Now.&quot; It also appears significantly undervalued with very low P/E ratios and positive free cash flow.">The company has announced a corporate restructuring plan aimed at future growth and has been recognized as one of the &quot;Best 52-Week Low Mid Cap Stocks to Buy Now.&quot; It also appears significantly undervalued with very low P/E ratios and positive free cash flow.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Short-term sentiment is likely impacted by a warning that the company is unlikely to achieve an earnings beat in its upcoming report, coupled with negative year-over-year revenue growth. The company also carries an extremely high debt-to-equity ratio, posing a significant financial risk.">Short-term sentiment is likely impacted by a warning that the company is unlikely to achieve an earnings beat in its upcoming report, coupled with negative year-over-year revenue growth. The company also carries an extremely high debt-to-equity ratio, posing a significant financial risk.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">75.4%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/AVY" target="_blank" rel="noopener noreferrer" class="hover:underline">AVY</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Avery Dennison Corporation</td>
+            <td class="px-4 py-3 text-gray-600">Consumer Cyclical</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">5</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">3</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The short-term bullishness score is slightly bearish due to the complete absence of recent news and below-average trading volume (0.7x), indicating a lack of immediate positive catalysts or investor interest. While analysts hold a &quot;BUY&quot; consensus and a higher target price, these are long-term indicators, and the short-term outlook is dampened by the current flat trading within a narrow range and weak recent stock performance.">The short-term bullishness score is slightly bearish due to the complete absence of recent news and below-average trading volume (0.7x), indicating a lack of immediate positive catalysts or investor interest. While analysts hold a &quot;BUY&quot; consensus and a higher target price, these are long-term indicators, and the short-term outlook is dampened by the current flat trading within a narrow range and weak recent stock performance.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Analysts maintain a &quot;BUY&quot; consensus with a target price suggesting decent upside potential, and the company exhibits strong Free Cash Flow with a sustainable dividend payout ratio. The firm also maintains healthy gross and operating margins.">Analysts maintain a &quot;BUY&quot; consensus with a target price suggesting decent upside potential, and the company exhibits strong Free Cash Flow with a sustainable dividend payout ratio. The firm also maintains healthy gross and operating margins.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The company shows negative earnings growth and very low revenue growth, significantly underperforming the S&amp;P 500 over the past year. A high Debt/Equity ratio of 171.01 suggests considerable financial leverage and potential risk.">The company shows negative earnings growth and very low revenue growth, significantly underperforming the S&amp;P 500 over the past year. A high Debt/Equity ratio of 171.01 suggests considerable financial leverage and potential risk.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">71.0%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/LII" target="_blank" rel="noopener noreferrer" class="hover:underline">LII</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Lennox International Inc.</td>
+            <td class="px-4 py-3 text-gray-600">Industrials</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-red-100 text-red-800">3</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">3</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">3</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">5</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The 1-day outlook is predominantly bearish due to fresh analyst downgrades and price target cuts, reflecting persistent residential industry headwinds and mixed Q3 results. This negative sentiment, compounded by the company&#x27;s high debt/equity ratio, overshadows its strong margins and leads to a cautious short-term view despite average trading volume.">The 1-day outlook is predominantly bearish due to fresh analyst downgrades and price target cuts, reflecting persistent residential industry headwinds and mixed Q3 results. This negative sentiment, compounded by the company&#x27;s high debt/equity ratio, overshadows its strong margins and leads to a cautious short-term view despite average trading volume.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Lennox demonstrates strong operational efficiency with high gross/operating margins and return on equity, alongside a sustainable dividend payout ratio.">Lennox demonstrates strong operational efficiency with high gross/operating margins and return on equity, alongside a sustainable dividend payout ratio.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Recent analyst downgrades and price target reductions, citing persistent residential industry headwinds and negative revenue growth, temper optimism amidst a very high debt-to-equity ratio.">Recent analyst downgrades and price target reductions, citing persistent residential industry headwinds and negative revenue growth, temper optimism amidst a very high debt-to-equity ratio.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">97.1%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/AMT" target="_blank" rel="noopener noreferrer" class="hover:underline">AMT</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">American Tower Corporation</td>
+            <td class="px-4 py-3 text-gray-600">Real Estate</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-red-100 text-red-800">3</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">9</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Despite overwhelmingly positive Q3 results and a strong forward outlook, the stock is explicitly noted as &#x27;losing ground&#x27; today. This negative price action, amplified by 2.1x average volume, suggests significant selling pressure. For the 1-day outlook, the market&#x27;s immediate negative reaction outweighs the strong fundamental news.">Despite overwhelmingly positive Q3 results and a strong forward outlook, the stock is explicitly noted as &#x27;losing ground&#x27; today. This negative price action, amplified by 2.1x average volume, suggests significant selling pressure. For the 1-day outlook, the market&#x27;s immediate negative reaction outweighs the strong fundamental news.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="American Tower reported robust Q3 results, beating estimates with strong tenant billings, data center demand, and an upbeat full-year FFO outlook, driving continued growth in leasing activity. Analysts maintain a strong BUY consensus with significant upside to the target price.">American Tower reported robust Q3 results, beating estimates with strong tenant billings, data center demand, and an upbeat full-year FFO outlook, driving continued growth in leasing activity. Analysts maintain a strong BUY consensus with significant upside to the target price.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Despite strong quarterly results, the stock is currently losing ground on high volume, and the company carries a substantial debt load with a high dividend payout ratio based on reported earnings. The company also experienced a significant year-over-year earnings decline.">Despite strong quarterly results, the stock is currently losing ground on high volume, and the company carries a substantial debt load with a high dividend payout ratio based on reported earnings. The company also experienced a significant year-over-year earnings decline.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">94.6%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/BALL" target="_blank" rel="noopener noreferrer" class="hover:underline">BALL</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Ball Corporation</td>
+            <td class="px-4 py-3 text-gray-600">Consumer Cyclical</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-red-100 text-red-800">3</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">3</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The short-term outlook for BALL is bearish due to recent news indicating a likely earnings beat miss for its upcoming report, which is a significant negative catalyst. This immediate sentiment is further reinforced by lower-than-average trading volume, suggesting a lack of positive investor momentum. These immediate factors outweigh the otherwise solid long-term growth and valuation metrics for the 1-day horizon.">The short-term outlook for BALL is bearish due to recent news indicating a likely earnings beat miss for its upcoming report, which is a significant negative catalyst. This immediate sentiment is further reinforced by lower-than-average trading volume, suggesting a lack of positive investor momentum. These immediate factors outweigh the otherwise solid long-term growth and valuation metrics for the 1-day horizon.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="BALL exhibits strong earnings growth and a significant analyst target price suggesting undervaluation, supported by a reasonable forward P/E, indicating long-term potential.">BALL exhibits strong earnings growth and a significant analyst target price suggesting undervaluation, supported by a reasonable forward P/E, indicating long-term potential.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The short-term outlook is challenged by recent news anticipating a likely earnings miss, coupled with a highly leveraged balance sheet indicated by a very high debt-to-equity ratio.">The short-term outlook is challenged by recent news anticipating a likely earnings miss, coupled with a highly leveraged balance sheet indicated by a very high debt-to-equity ratio.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">87.8%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/BLDR" target="_blank" rel="noopener noreferrer" class="hover:underline">BLDR</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Builders FirstSource, Inc.</td>
+            <td class="px-4 py-3 text-gray-600">Industrials</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-red-100 text-red-800">3</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">2</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">2</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">5</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The immediate outlook is negative due to expected lower third-quarter earnings and sales, signaling ongoing market headwinds. This negative news, combined with below-average trading volume, suggests a lack of short-term buying momentum and potential for downward pressure today.">The immediate outlook is negative due to expected lower third-quarter earnings and sales, signaling ongoing market headwinds. This negative news, combined with below-average trading volume, suggests a lack of short-term buying momentum and potential for downward pressure today.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Analysts view the stock as a BUY with significant upside potential to its target price, and the company maintains strong free cash flow and a solid ROE despite industry headwinds.">Analysts view the stock as a BUY with significant upside potential to its target price, and the company maintains strong free cash flow and a solid ROE despite industry headwinds.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Short-term outlook is clouded by expectations of lower third-quarter earnings and sales due to housing market headwinds, compounded by below-average trading volume.">Short-term outlook is clouded by expectations of lower third-quarter earnings and sales due to housing market headwinds, compounded by below-average trading volume.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">73.1%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/PNW" target="_blank" rel="noopener noreferrer" class="hover:underline">PNW</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Pinnacle West Capital Corporation</td>
+            <td class="px-4 py-3 text-gray-600">Utilities</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-red-100 text-red-800">2</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">2</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">5</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">2</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The primary driver for a very bearish short-term outlook is the explicit recent news indicating Pinnacle West is unlikely to achieve an earnings beat in its upcoming report. This negative expectation, combined with the stock&#x27;s underperformance and underlying financial concerns like negative free cash flow, is expected to exert downward pressure on the stock today. The slightly elevated trading volume could reflect increased negative sentiment based on this news.">The primary driver for a very bearish short-term outlook is the explicit recent news indicating Pinnacle West is unlikely to achieve an earnings beat in its upcoming report. This negative expectation, combined with the stock&#x27;s underperformance and underlying financial concerns like negative free cash flow, is expected to exert downward pressure on the stock today. The slightly elevated trading volume could reflect increased negative sentiment based on this news.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The analyst target price suggests a modest upside potential, and the company operates within the stable utilities sector, providing essential services.">The analyst target price suggests a modest upside potential, and the company operates within the stable utilities sector, providing essential services.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Recent news indicates PNW is unlikely to beat its upcoming earnings, coupled with negative earnings growth, significant debt, and negative free cash flow.">Recent news indicates PNW is unlikely to beat its upcoming earnings, coupled with negative earnings growth, significant debt, and negative free cash flow.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">87.0%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/BF-B" target="_blank" rel="noopener noreferrer" class="hover:underline">BF-B</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Brown-Forman Corporation</td>
+            <td class="px-4 py-3 text-gray-600">Consumer Defensive</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-red-100 text-red-800">2</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">1</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">1</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">4</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">6</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The short-term outlook is bearish primarily due to the recent news forecasting a notable double-digit drop in Q2 earnings. Despite neutral trading volume today, this strong negative fundamental news is likely to weigh heavily on investor sentiment for the immediate future.">The short-term outlook is bearish primarily due to the recent news forecasting a notable double-digit drop in Q2 earnings. Despite neutral trading volume today, this strong negative fundamental news is likely to weigh heavily on investor sentiment for the immediate future.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Brown-Forman maintains positive free cash flow and a manageable dividend payout ratio, with analysts still seeing some upside to the target price.">Brown-Forman maintains positive free cash flow and a manageable dividend payout ratio, with analysts still seeing some upside to the target price.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The company faces significant headwinds with expected double-digit earnings drops, negative growth trends, and substantial underperformance compared to the broader market.">The company faces significant headwinds with expected double-digit earnings drops, negative growth trends, and substantial underperformance compared to the broader market.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">74.3%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/FFIV" target="_blank" rel="noopener noreferrer" class="hover:underline">FFIV</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">F5, Inc.</td>
+            <td class="px-4 py-3 text-gray-600">Technology</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-red-100 text-red-800">2</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">3</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-yellow-100 text-yellow-800">6</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The 1-day outlook for FFIV is bearish due to the significant 8.3% stock drop on exceptionally high volume (4.4x average), triggered by disappointing financial guidance and a disclosed security incident. An analyst downgrade further solidifies the negative short-term sentiment.">The 1-day outlook for FFIV is bearish due to the significant 8.3% stock drop on exceptionally high volume (4.4x average), triggered by disappointing financial guidance and a disclosed security incident. An analyst downgrade further solidifies the negative short-term sentiment.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="F5, Inc. announced a strategic integration with NVIDIA for AI infrastructure, achieved record quarterly and annual revenues, and demonstrated strong historical revenue and earnings growth.">F5, Inc. announced a strategic integration with NVIDIA for AI infrastructure, achieved record quarterly and annual revenues, and demonstrated strong historical revenue and earnings growth.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The company disclosed a significant security incident involving source code exfiltration, issued cautious financial guidance for fiscal 2026, and saw its shares drop significantly with high volume following an analyst downgrade.">The company disclosed a significant security incident involving source code exfiltration, issued cautious financial guidance for fiscal 2026, and saw its shares drop significantly with high volume following an analyst downgrade.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">73.4%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/ZBRA" target="_blank" rel="noopener noreferrer" class="hover:underline">ZBRA</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">Zebra Technologies Corporation</td>
+            <td class="px-4 py-3 text-gray-600">Technology</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-red-100 text-red-800">2</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">2</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">7</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-green-100 text-green-800">8</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="The stock&#x27;s immediate reaction to strong Q3 earnings and raised guidance was a significant price drop, with news explicitly stating it &#x27;cratered&#x27; and &#x27;stumbled.&#x27; This negative price action occurred on exceptionally high volume (5.4x average), indicating strong selling pressure and bearish sentiment for the short term despite favorable fundamentals.">The stock&#x27;s immediate reaction to strong Q3 earnings and raised guidance was a significant price drop, with news explicitly stating it &#x27;cratered&#x27; and &#x27;stumbled.&#x27; This negative price action occurred on exceptionally high volume (5.4x average), indicating strong selling pressure and bearish sentiment for the short term despite favorable fundamentals.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Zebra Technologies reported strong Q3 earnings, beating analyst estimates and raising its full-year outlook due to robust demand, indicating underlying operational strength.">Zebra Technologies reported strong Q3 earnings, beating analyst estimates and raising its full-year outlook due to robust demand, indicating underlying operational strength.</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="Despite beating Q3 earnings and raising guidance, ZBRA stock experienced a significant sell-off, or &quot;cratered,&quot; on exceptionally high volume, suggesting immediate investor skepticism or profit-taking.">Despite beating Q3 earnings and raising guidance, ZBRA stock experienced a significant sell-off, or &quot;cratered,&quot; on exceptionally high volume, suggesting immediate investor skepticism or profit-taking.</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">69.7%</td>
+        </tr>
+        
+
+        <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 text-sm">
+            <td class="px-4 py-3 font-medium text-blue-600 whitespace-nowrap">
+                <a href="https://finance.yahoo.com/quote/FDS" target="_blank" rel="noopener noreferrer" class="hover:underline">FDS</a>
+            </td>
+            <td class="px-4 py-3 text-gray-700">FactSet Research Systems Inc.</td>
+            <td class="px-4 py-3 text-gray-600">Financial Services</td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">2025-10-28</td>
+            <td class="px-3 py-2 font-mono font-bold text-center rounded-md bg-red-100 text-red-800">1</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">1</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">1</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">1</td>
+            <td class="px-3 py-2 font-mono text-center rounded-md bg-red-100 text-red-800">1</td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="API JSON Decode Err">API JSON Decode Err</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="N/A">N/A</p></td>
+            <td class="px-4 py-3 text-gray-700 min-w-[20rem] max-w-sm"><p class="truncate" title="N/A">N/A</p></td>
+            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">93.3%</td>
+        </tr>
+        
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterInput = document.getElementById('filterInput');
+            const tableBody = document.getElementById('tableBody');
+            const table = document.getElementById('stockTable');
+            const headers = table.querySelectorAll('th.sortable');
+            const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+            // --- Filter Function ---
+            filterInput.addEventListener('keyup', () => {
+                const filterText = filterInput.value.toLowerCase();
+                rows.forEach(row => {
+                    // Check Ticker (col 0), Name (col 1), Sector (col 2)
+                    const ticker = row.cells[0].textContent.toLowerCase();
+                    const name = row.cells[1].textContent.toLowerCase();
+                    const sector = row.cells[2].textContent.toLowerCase();
+                    const isVisible = ticker.includes(filterText) || 
+                                      name.includes(filterText) || 
+                                      sector.includes(filterText);
+                    row.style.display = isVisible ? '' : 'none';
+                });
+            });
+
+            // --- Sort Function ---
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const column = parseInt(header.dataset.column, 10);
+                    const type = header.dataset.type;
+                    const isAsc = header.classList.contains('sort-asc');
+                    const direction = isAsc ? -1 : 1;
+
+                    // Reset other headers
+                    headers.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+                    header.classList.toggle('sort-asc', !isAsc);
+                    header.classList.toggle('sort-desc', isAsc);
+
+                    // Sort the rows array
+                    const sortedRows = rows.sort((a, b) => {
+                        let valA = a.cells[column].textContent.trim();
+                        let valB = b.cells[column].textContent.trim();
+
+                        if (type === 'number') {
+                            valA = parseFloat(valA) || 0;
+                            valB = parseFloat(valB) || 0;
+                        } else if (type === 'percent') {
+                            valA = parseFloat(valA.replace('%', '')) || 0;
+                            valB = parseFloat(valB.replace('%', '')) || 0;
+                        }
+                        // Default is string compare
+                        
+                        if (valA < valB) return -1 * direction;
+                        if (valA > valB) return 1 * direction;
+                        return 0;
+                    });
+
+                    // Re-append rows to the table body
+                    sortedRows.forEach(row => tableBody.appendChild(row));
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
+    

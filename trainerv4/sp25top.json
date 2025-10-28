@@ -1,0 +1,253 @@
+  "MOH": {
+    "news_sentiment_score": 2,
+    "growth_score": 3,
+    "valuation_score": 6,
+    "financial_health_score": 4,
+    "positive_summary": "Molina Healthcare maintains a strong cash position, and analysts project over 10% upside with a very low forward P/E, suggesting potential undervaluation.",
+    "negative_summary": "The stock has suffered a nearly 50% decline in the past year, accompanied by a significant 73.4% drop in quarterly earnings, negative free cash flow, and a pending class action lawsuit.",
+    "bullishness_score": 3,
+    "reasoning": "The combination of a massive earnings decline, negative free cash flow, a class action lawsuit, and extremely poor stock performance outweighs the strong cash position and low forward P/E."
+  },
+  "DD": {
+    "news_sentiment_score": 6,
+    "growth_score": 3,
+    "valuation_score": 8,
+    "financial_health_score": 7,
+    "positive_summary": "DuPont boasts strong free cash flow, a healthy debt-to-equity ratio, and a \"STRONG_BUY\" analyst consensus with a projected 15.1% price upside, boosted by positive news surrounding its spinoffs.",
+    "negative_summary": "Despite strong operating margins, the company reported negative net earnings, very low return on equity, and an unsustainably high dividend payout ratio, leading to a significant underperformance against the S&P 500.",
+    "bullishness_score": 6,
+    "reasoning": "While current earnings are poor and the dividend payout is unsustainable, strong free cash flow, a healthy balance sheet, a \"STRONG_BUY\" analyst consensus, and positive news regarding spinoffs indicate potential for future recovery."
+  },
+  "DOC": {
+    "news_sentiment_score": 5,
+    "growth_score": 2,
+    "valuation_score": 3,
+    "financial_health_score": 4,
+    "positive_summary": "Healthpeak Properties demonstrates robust gross and operating margins, strong free cash flow, and an analyst \"BUY\" consensus with over 10% projected price upside.",
+    "negative_summary": "The company suffers from negligible revenue growth, negative net margin and ROE, extremely high debt and debt/equity ratio, an unsustainable dividend payout ratio, and a significant underperformance against the S&P 500.",
+    "bullishness_score": 3,
+    "reasoning": "Despite strong FCF and an analyst \"BUY\" consensus, the company's negligible revenue growth, negative profitability, high debt levels, and an exceptionally high forward P/E make it a risky investment."
+  },
+  "LRCX": {
+    "news_sentiment_score": 9,
+    "growth_score": 10,
+    "valuation_score": 7,
+    "financial_health_score": 9,
+    "positive_summary": "Lam Research exhibits exceptional quarterly revenue and earnings growth, outstanding profitability margins, very strong financial health with robust free cash flow, and its stock has more than doubled over the past year.",
+    "negative_summary": "The primary concern is the very limited upside to the average analyst target, suggesting that much of its impressive growth and performance might already be priced into the current stock value, despite a high forward P/E.",
+    "bullishness_score": 9,
+    "reasoning": "Lam Research demonstrates exceptional growth, profitability, and financial health, driven by strong market demand for semiconductor equipment, making it a compelling investment despite its current price nearing analyst targets."
+  },
+  "EXPD": {
+    "news_sentiment_score": 4,
+    "growth_score": 6,
+    "valuation_score": 2,
+    "financial_health_score": 9,
+    "positive_summary": "Expeditors International demonstrates robust financial health with strong cash, very low debt, and excellent free cash flow, alongside respectable revenue and earnings growth and a high return on equity.",
+    "negative_summary": "Despite solid financial fundamentals, the stock has significantly underperformed the S&P 500, faces an \"UNDERPERFORM\" analyst consensus with negative price target potential, and has a relatively high forward P/E given its flat stock performance.",
+    "bullishness_score": 4,
+    "reasoning": "While the company exhibits strong financial health and decent growth, its significant underperformance, negative analyst consensus, and current valuation suggest limited upside and potential downside risk."
+  }
+}
+  "MS": {
+    "news_sentiment_score": 6,
+    "growth_score": 9,
+    "valuation_score": 5,
+    "financial_health_score": 4,
+    "positive_summary": "Morgan Stanley demonstrates exceptional revenue and earnings growth, strong profitability, and significant market outperformance.",
+    "negative_summary": "The stock shows very limited upside to the average analyst target and carries a significantly high debt-to-equity ratio, raising financial health concerns despite a large cash position.",
+    "bullishness_score": 6,
+    "reasoning": "Despite strong growth and profitability, the high debt-to-equity ratio, limited analyst target upside, and some institutional selling temper overall bullishness to a moderate level."
+  },
+  "RVTY": {
+    "news_sentiment_score": 5,
+    "growth_score": 2,
+    "valuation_score": 7,
+    "financial_health_score": 8,
+    "positive_summary": "Revvity shows a healthy financial position with positive free cash flow and an attractive analyst target upside.",
+    "negative_summary": "The company exhibits very weak recent growth with a substantial decline in earnings and significant underperformance compared to the broader market.",
+    "bullishness_score": 4,
+    "reasoning": "Despite a solid financial position and analyst target upside, severe negative earnings growth and significant market underperformance outweigh the positives, leading to a bearish outlook."
+  },
+  "SWK": {
+    "news_sentiment_score": 8,
+    "growth_score": 2,
+    "valuation_score": 8,
+    "financial_health_score": 3,
+    "positive_summary": "Stanley Black & Decker has recently outperformed Q2 earnings and holds an attractive valuation with significant analyst target upside.",
+    "negative_summary": "The company faces challenges with negative revenue growth, low profitability, high debt, and an unsustainable dividend payout ratio.",
+    "bullishness_score": 4,
+    "reasoning": "While valuation is appealing and recent news positive, the underlying weak growth, low profitability, and concerning financial health metrics make for a cautious outlook."
+  },
+  "TJX": {
+    "news_sentiment_score": 7,
+    "growth_score": 8,
+    "valuation_score": 6,
+    "financial_health_score": 7,
+    "positive_summary": "The TJX Companies demonstrates strong revenue and earnings growth, exceptional return on equity, and a robust financial position with significant free cash flow.",
+    "negative_summary": "Despite a \"STRONG_BUY\" consensus, the stock has a high forward P/E ratio and limited potential upside to the average analyst target.",
+    "bullishness_score": 7,
+    "reasoning": "Strong growth, excellent profitability, healthy financial health, and a \"STRONG_BUY\" consensus outweigh a high P/E and limited near-term analyst target upside."
+  },
+  "NWS": {
+    "news_sentiment_score": 6,
+    "growth_score": 6,
+    "valuation_score": 3,
+    "financial_health_score": 9,
+    "positive_summary": "News Corporation boasts exceptional recent earnings growth and an excellent financial health with low debt and strong cash flow.",
+    "negative_summary": "The company faces significant valuation concerns due to a high forward P/E and substantial downside to the analyst target, despite low revenue growth.",
+    "bullishness_score": 5,
+    "reasoning": "While financial health and earnings growth are strong, concerns about flat revenue growth and a high valuation with significant downside potential to analyst targets make it a neutral holding."
+  },
+  "ICE": {
+    "news_sentiment_score": 7,
+    "growth_score": 9,
+    "valuation_score": 8,
+    "financial_health_score": 7,
+    "positive_summary": "Intercontinental Exchange exhibits strong revenue and earnings growth, exceptional profitability margins, and significant free cash flow.",
+    "negative_summary": "Despite strong fundamentals, the stock has underperformed the S&P500 over the past year and carries an elevated total debt load.",
+    "bullishness_score": 8,
+    "reasoning": "Intercontinental Exchange displays strong growth, exceptional profitability, healthy cash flow, and an attractive valuation with significant analyst upside, making it a compelling investment despite high debt."
+  },
+  "BR": {
+    "news_sentiment_score": 5,
+    "growth_score": 7,
+    "valuation_score": 7,
+    "financial_health_score": 7,
+    "positive_summary": "Broadridge Financial Solutions demonstrates solid growth, excellent ROE, robust free cash flow, and a good potential upside to analyst targets.",
+    "negative_summary": "The stock has underperformed the broader market and carries an elevated debt-to-equity ratio, alongside a neutral analyst consensus.",
+    "bullishness_score": 6,
+    "reasoning": "Solid growth, strong ROE, and healthy financial health are positive, but market underperformance and a neutral analyst consensus temper the overall bullishness."
+  },
+  "BIIB": {
+    "news_sentiment_score": 8,
+    "growth_score": 5,
+    "valuation_score": 9,
+    "financial_health_score": 9,
+    "positive_summary": "Biogen boasts excellent financial health, a very attractive valuation, and significant positive news with the recent drug authorization for Alzheimer's.",
+    "negative_summary": "Despite positive developments, the stock has substantially underperformed the S&P500, and recent growth metrics are only moderate.",
+    "bullishness_score": 7,
+    "reasoning": "Excellent financial health, a highly attractive valuation, and significant positive drug news contribute to a strong bullish outlook, even with past market underperformance."
+  },
+  "MU": {
+    "news_sentiment_score": 8,
+    "growth_score": 10,
+    "valuation_score": 5,
+    "financial_health_score": 6,
+    "positive_summary": "Micron Technology exhibits exceptional growth in revenue and earnings, strong profitability, and massive stock outperformance, along with robust cash reserves.",
+    "negative_summary": "Despite strong growth, the stock trades above its average analyst target and has a concerning negative free cash flow.",
+    "bullishness_score": 8,
+    "reasoning": "Exceptional growth, strong profitability, and positive sentiment outweigh the negative free cash flow and the current price being above the average analyst target."
+  },
+  "VRSK": {
+    "news_sentiment_score": 5,
+    "growth_score": 5,
+    "valuation_score": 6,
+    "financial_health_score": 2,
+    "positive_summary": "Verisk Analytics boasts excellent profitability margins, an exceptionally high return on equity, and strong free cash flow with significant analyst upside potential.",
+    "negative_summary": "The company faces severe financial health concerns due to an extremely high debt-to-equity ratio and recent negative earnings growth, leading to significant market underperformance.",
+    "bullishness_score": 3,
+    "reasoning": "Despite strong margins, high ROE, and analyst upside, the extremely high debt-to-equity ratio and negative earnings growth present substantial risks, leading to a bearish outlook."
+  }
+}
+  "AMAT": {
+    "news_sentiment_score": 6,
+    "growth_score": 8,
+    "valuation_score": 4,
+    "financial_health_score": 9,
+    "positive_summary": "Applied Materials exhibits robust profitability, excellent return on equity, and a strong financial position with more cash than debt.",
+    "negative_summary": "Despite strong fundamentals, the average analyst target suggests a potential downside from the current price, and recent news mentioned staff cuts.",
+    "bullishness_score": 7,
+    "reasoning": "AMAT demonstrates strong growth, high profitability, excellent financial health, and analyst support, though its current price is above the average analyst target."
+  },
+  "CARR": {
+    "news_sentiment_score": 8,
+    "growth_score": 2,
+    "valuation_score": 8,
+    "financial_health_score": 4,
+    "positive_summary": "Carrier Global has a strong analyst target upside, a \"BUY\" consensus, and recently announced a significant share repurchase authorization.",
+    "negative_summary": "The company exhibits very poor earnings growth, low revenue growth, and high debt levels, with the stock significantly underperforming the S&P500.",
+    "bullishness_score": 5,
+    "reasoning": "While Carrier Global shows significant analyst upside and a positive share repurchase program, its very weak earnings growth and high debt levels present considerable risks."
+  },
+  "KDP": {
+    "news_sentiment_score": 9,
+    "growth_score": 6,
+    "valuation_score": 8,
+    "financial_health_score": 3,
+    "positive_summary": "Keurig Dr Pepper is experiencing strong revenue and earnings growth, positive news regarding strategic transformation and investment, and a good analyst target upside.",
+    "negative_summary": "The company carries a very high debt load relative to cash, a high debt-to-equity ratio, and has underperformed the S&P500 over the past year.",
+    "bullishness_score": 6,
+    "reasoning": "Keurig Dr Pepper benefits from positive news, solid growth, and favorable analyst outlook, but its significant debt burden and low ROE are considerable financial risks."
+  },
+  "DHR": {
+    "news_sentiment_score": 4,
+    "growth_score": 6,
+    "valuation_score": 8,
+    "financial_health_score": 6,
+    "positive_summary": "Danaher benefits from strong free cash flow, excellent profitability margins, and a \"STRONG BUY\" analyst consensus with good upside potential.",
+    "negative_summary": "The company experienced low revenue growth and soft earnings recently, has a high total debt load, and its stock has significantly underperformed the S&P500.",
+    "bullishness_score": 7,
+    "reasoning": "Danaher exhibits robust free cash flow, excellent margins, and a \"STRONG BUY\" consensus with significant upside, despite recent soft earnings and high debt."
+  },
+  "CTAS": {
+    "news_sentiment_score": 7,
+    "growth_score": 8,
+    "valuation_score": 4,
+    "financial_health_score": 7,
+    "positive_summary": "Cintas demonstrates strong revenue and earnings growth, excellent profitability margins, an outstanding return on equity, and robust free cash flow.",
+    "negative_summary": "Despite its strong performance metrics, the stock trades at a very high forward P/E ratio, has very low cash on hand, and has underperformed the S&P500.",
+    "bullishness_score": 6,
+    "reasoning": "Cintas boasts strong operational performance and free cash flow, but its very high forward P/E and \"HOLD\" analyst consensus suggest it may be overvalued despite potential upside."
+  },
+  "DLTR": {
+    "news_sentiment_score": 7,
+    "growth_score": 6,
+    "valuation_score": 6,
+    "financial_health_score": 2,
+    "positive_summary": "Dollar Tree demonstrates excellent revenue and earnings growth, significant stock outperformance, and positive analyst sentiment.",
+    "negative_summary": "The company suffers from a negative net margin, an extremely high debt-to-equity ratio, and substantial total debt.",
+    "bullishness_score": 5,
+    "reasoning": "Dollar Tree benefits from strong revenue and earnings growth and market outperformance, yet faces significant headwinds from its negative net margin and extremely high debt-to-equity ratio."
+  },
+  "KLAC": {
+    "news_sentiment_score": 5,
+    "growth_score": 10,
+    "valuation_score": 2,
+    "financial_health_score": 5,
+    "positive_summary": "KLA Corporation exhibits phenomenal revenue and earnings growth, exceptional profitability margins, and an outstanding return on equity, leading to significant stock outperformance.",
+    "negative_summary": "Despite strong operational performance, the stock trades at a high forward P/E and faces a substantial potential downside according to the average analyst target.",
+    "bullishness_score": 6,
+    "reasoning": "KLA Corporation shows exceptional growth and profitability, but its current valuation, indicated by a high P/E and a significant negative average analyst target, presents a substantial risk despite a \"BUY\" consensus."
+  },
+  "AMT": {
+    "news_sentiment_score": 5,
+    "growth_score": 4,
+    "valuation_score": 8,
+    "financial_health_score": 2,
+    "positive_summary": "American Tower boasts exceptional gross and operating margins, a strong return on equity, robust free cash flow, and a significant analyst target upside with a \"BUY\" consensus.",
+    "negative_summary": "The company faces extremely high total debt and debt-to-equity ratio, very poor earnings growth, and an unsustainable dividend payout ratio.",
+    "bullishness_score": 4,
+    "reasoning": "American Tower faces significant risks from its extremely high debt, poor earnings growth, and unsustainable dividend payout, despite strong margins and analyst upside."
+  },
+  "NWSA": {
+    "news_sentiment_score": 5,
+    "growth_score": 7,
+    "valuation_score": 9,
+    "financial_health_score": 8,
+    "positive_summary": "News Corporation boasts exceptional earnings growth, strong financial health with low debt, and a highly attractive analyst target potential with a \"BUY\" consensus.",
+    "negative_summary": "The company exhibits very low revenue growth, a low return on equity, and its stock has underperformed the broader market.",
+    "bullishness_score": 8,
+    "reasoning": "News Corporation presents strong financial health, impressive earnings growth, and significant analyst-projected upside, despite low revenue growth and market underperformance."
+  },
+  "GWW": {
+    "news_sentiment_score": 4,
+    "growth_score": 6,
+    "valuation_score": 5,
+    "financial_health_score": 7,
+    "positive_summary": "W.W. Grainger exhibits good profitability margins, an outstanding return on equity, and strong free cash flow.",
+    "negative_summary": "The company is characterized by low revenue and earnings growth, significant stock underperformance, and a neutral analyst consensus with limited upside potential.",
+    "bullishness_score": 5,
+    "reasoning": "W.W. Grainger possesses strong financial health and an excellent ROE, but its low growth rates, market underperformance, and neutral analyst outlook temper bullish sentiment."
+  }
+}
